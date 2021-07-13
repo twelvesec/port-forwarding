@@ -37,26 +37,46 @@ It is inspired by (and we believe extends) the following:
 
 ## SSH Local Port Forwarding
 
-Brings a port from a machine inside the internal victim's network to your attacking machine:
+Brings a port from the remote machine to your attacking machine:
 
 ```
-ssh -N -L [IP_of_Interface(optional)]:[port_on_your_system]:[internal_victim_ip]:[internal_victim_port] [victim_user]@[victim_ip] -vv
+ssh -N -L [IP_of_Interface(optional)]:[end_port]:[victim_ip]:[victim_port] [victim_user]@[victim_ip]
 ```
 
-the `internal_victim_ip` is the IP of the system whose port you want to forward on your attacking host, which may be different from the SSH `victim_ip`
+> **Note**: *The above command is run at your attacking machine.*
 
-The ```0.0.0.0``` sets a bind port for all interfaces and can be usually omitted.
+The `victim_ip` is the IP of the system whose port you want to forward on your attacking host.
 
- 
+The `[IP_of_Interface(optional)]` can be omitted, or set to `0.0.0.0` so as to set a bind port for all interfaces.
+
+The `-N` can be omitted, as it doesn't enable ssh command execution, it's there to be useful when forwarding ports.
+
+**example**: `ssh -N -L 0.0.0.0:9999:192.168.67.132:80 victim@192.168.67.132`
+
+After the above command is run, the remote `httpd` service can be accessed by your local port `9999`.
+
 ## SSH Remote Port Forwarding
 
-Exposes a port from the internal victim's network, on **your SSH server, when executing commands on this remote host**:
+Brings a port from a machine in the internal victim's network to your attacking machine:
 
 ```
-ssh -N -R [your_ssh_server_ip]:[your_port]:127.0.0.1:[victim_port_you_want_to_forward] [attackerusername]@[your_ssh_server_ip] -vv
+ssh -N -R [your_ssh_server_interface]:[your_port]:[victim_ip]:[victim_port_you_want_to_forward] [attackerusername]@[your_ssh_server_ip]
 ```
 
-For this to work, you need the following configuration at your SSH server:
+The `your_ssh_server_interface:` can be omitted. 
+
+The `-N` can be omitted, as it doesn't enable ssh command execution, it's there to be useful when forwarding ports.
+
+> **Note**: *The above command is run at a compromised machine inside the target network.*
+
+**example**: `ssh -N -R 192.168.67.1:4445:192.168.67.128:445 user@192.168.67.1`
+
+After the above command is run, port `445` of host `192.168.67.128` (which is different from the compromised machine) is forwarded at the ssh server of IP `192.168.67.1`. 
+
+The `victim_ip` can be set to `127.0.0.1`. This means that a local (in relation to where the command is run) port will be forwarded to the target ssh server
+
+For this to work, you need the following configuration at your SSH server (`/etc/ssh/sshd_config`):
+
 `GatewayPorts yes`
 
 ## Proxychains 
