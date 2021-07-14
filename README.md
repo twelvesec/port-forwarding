@@ -81,31 +81,49 @@ For this to work, you need the following configuration at your SSH server (`/etc
 
 ## Proxychains 
 
-Sets a Tunnel via ssh.
+When you want to forward many target ports in a dynamic manner, using `ssh` you can create such a dynamic tunnel with the `-D` switch. Then, using this tunnel and `proxychains`, you can forward all scans/traffic through this tunnel, which dynamically forward the required port.
 
-### Configure proxychains.conf
+### Configure proxychains.conf (attacker's machine)
+
+At the attacker's machine, make sure `proxychains` is installed. The default configuration settings are ok (`/etc/proxychains.conf`):
 
 ```
 #proxy_dns 
 socks4 127.0.0.1 9050
 ```
-Also, you can use ```socks5```, ```http``` or ```https``` protocol.
-This tool doesn't support the ICMP protocol.
 
-### Dynamic port via ssh
+You can use `socks5`, `http` or `https` protocol. `ICMP` is not supported.
+
+### Dynamic port via ssh 
+
+We create a dynamic application-level port forwarding from the attacking machine to the victim machine, by running the following at the attacker's machine
 
 ```
 ssh -fND [proxychains.conf_port] [victim_user]@[victim_host]
 ```
 
-The **-f** requests ssh to run in background just before command execution.
+The `-f` requests ssh to run in background just before command execution.
 
-The **-N** doesn't execute a remote command.
+The `-N` can be omitted, as it doesn't enable ssh command execution, it's there to be useful when forwarding ports.
 
-### Execute proxychains
+We verify the successful tunnel creation with `ss -lt4pn`, where we should see something like this:
+```
+LISTEN	0		128		127.0.0.1:9050		0.0.0.0:*		users:(("ssh",pid=31697,fd=5))
+```
+
+Then, we can execute supported tools with `proxychains` so as to tunnel them through our ssh tunnel:
+
 ```
 proxychains [tool] 
 ```
+
+e.g.:
+
+```
+sudo proxychains nmap -sVT 172.16.45.130 -Pn
+```
+
+Remember that `proxychains` doesn't support `icmp` and therefore we should use relevant flags in `nmap` and other tools.
 
 ## Sshuttle
 
