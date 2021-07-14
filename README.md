@@ -164,6 +164,8 @@ sshuttle -e "ssh -i id_rsa" -r victim_user@victim_host 172.168.1.0/24
 
 The above command only routes subnet `172.168.1.0/24` back to the attacker
 
+`sshuttle` actually has a wealth of additional functionalities, you can further refer to its man-page.
+
 ## Redsocks
 
 Sets a TCP-to-proxy redirector through ssh. 
