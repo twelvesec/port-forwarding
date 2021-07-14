@@ -81,7 +81,7 @@ For this to work, you need the following configuration at your SSH server (`/etc
 
 ## Proxychains 
 
-When you want to forward many target ports in a dynamic manner, using `ssh` you can create such a dynamic tunnel with the `-D` switch. Then, using this tunnel and `proxychains`, you can forward all scans/traffic through this tunnel, which dynamically forward the required port.
+When you want to forward many target ports in a dynamic manner, using `ssh` you can create such a dynamic tunnel with the `-D` switch. Then, using this tunnel and `proxychains` you can forward all scans/traffic through `ssh` for every requested port in a dynamic manner.
 
 ### Configure proxychains.conf (attacker's machine)
 
