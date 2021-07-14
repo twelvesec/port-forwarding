@@ -133,19 +133,36 @@ Remember that `proxychains` doesn't support `icmp` and therefore we should use r
 
 ## Sshuttle
 
-Set a VPN through ssh:
+Set a VPN through ssh.
 
-```
-sshuttle -e "command to execute" -r [user]@[ip] [range]
+Requirements:
+- root access to the attacking machine
+- simple user access at the ssh server
+
+The simplest form is to run this from the attacker machine:
+
+```bash
+sudo sshuttle -vNHr victim_user@victim_host
 ```
 
-Example:
+The above command will create `iptables` `nat` rules to forward all networks that `victim_host` is connected to back to the attacker.
 
+- `-H` automatically updates the local `/etc/hosts` with maching remote hostnames
+- `-N` automatically attempts to route all subnets of the ssh server
+
+Then, the attacker can simply use a tool to connect to the desired host/port inside the *internal* network, which is normally inacessible, e.g.:
+
+```bash
+smbclient -L 172.16.45.130
 ```
-sshuttle -e "ssh -i id_rsa" -r root@10.10.10.130 172.168.1.0/24
+
+If you went to use a specific ssh command to connect to the remote server, such as specifying your `rsa` private key, you can use the `-e` like so:
+
+```bash
+sshuttle -e "ssh -i id_rsa" -r victim_user@victim_host 172.168.1.0/24
 ```
-The **-e** uses to connect to the remote server. The default is just ssh. Use this if your ssh client is in a non-standard location or you want to provide extra options to the ssh command <br /> 
-The **-r** uses for the remote hostname and optional username and ssh port number.
+
+The above command only routes subnet `172.168.1.0/24` back to the attacker
 
 ## Redsocks
 
