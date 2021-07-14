@@ -94,11 +94,11 @@ socks4 127.0.0.1 9050
 
 You can use `socks5`, `http` or `https` protocol. `ICMP` is not supported.
 
-### Dynamic port via ssh 
+### Dynamic port forwarding via ssh 
 
-We create a dynamic application-level port forwarding from the attacking machine to the victim machine, by running the following at the attacker's machine
+We create a dynamic application-level port forwarding from the attacking machine to the victim machine, by running the following at the attacker's machine:
 
-```
+```bash
 ssh -fND [proxychains.conf_port] [victim_user]@[victim_host]
 ```
 
@@ -107,7 +107,7 @@ The `-f` requests ssh to run in background just before command execution.
 The `-N` can be omitted, as it doesn't enable ssh command execution, it's there to be useful when forwarding ports.
 
 We verify the successful tunnel creation with `ss -lt4pn`, where we should see something like this:
-```
+```bash
 LISTEN	0		128		127.0.0.1:9050		0.0.0.0:*		users:(("ssh",pid=31697,fd=5))
 ```
 
@@ -119,7 +119,13 @@ proxychains [tool]
 
 e.g.:
 
+```bash
+proxychains smbclient -L 172.16.45.130
 ```
+
+or
+
+```bash
 sudo proxychains nmap -sVT 172.16.45.130 -Pn
 ```
 
