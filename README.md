@@ -17,6 +17,7 @@ It is inspired by (and we believe extends) the following:
   - [Dynamic port via ssh](#Dynamic-port-via-ssh)
   - [Execute proxychains](#Execute-proxychains)
 - [Sshuttle](#Sshuttle)
+- [Gsocket](#Gsocket)
 - [Redsocks](#Redsocks)
   - [Configure redsocks.conf](#Configure-redsocks.conf)
   - [Configure iptables](#Configure-iptables)
@@ -165,6 +166,45 @@ sshuttle -e "ssh -i id_rsa" -r victim_user@victim_host 172.168.1.0/24
 The above command only routes subnet `172.168.1.0/24` back to the attacker
 
 `sshuttle` actually has a wealth of additional functionalities, you can further refer to its man-page.
+
+
+## Gsocket
+
+[Global Socket](https://www.gsocket.io) allows two workstations on different private networks to communicate with each other. Through firewalls and through NAT - like there is no firewall.
+
+### Simple port forwarding
+
+Forward the TCP connection to `workstation` on port 8080 to the remote network to host 192.168.1.1 port 80.
+
+```bash
+# Host on the remote network
+gs-netcat -s AnySecretChangeMe -l -d 192.168.1.1 -p 80 #-D
+```
+
+```bash
+# Your workstation
+gs-netcat -s AnySecretChangeMe -p 8080 #-D
+# Test the connection
+curl -v http://127.0.0.1:8080
+```
+
+### Dynamic port forwarding
+
+```bash
+# Host on the remote network
+gs-netcat -s AnySecretChangeMe -l -S #-D
+```
+
+```bash
+# Your workstation
+gs-netcat -s AnySecretChangeMe -p 1080 #-D
+# Test the socks connection
+curl -x socks5h://0 ipinfo.io
+```
+
+The `-D` switch can be used to start gs-netcat in the background.
+
+More examples: [https://github.com/hackerschoice/gsocket](https://github.com/hackerschoice/gsocket).
 
 ## Redsocks
 
